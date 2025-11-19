@@ -104,7 +104,8 @@ INTRO
 
         // URL path to use for the docs endpoint (if `add_routes` is true).
         // By default, `/docs` opens the HTML page, `/docs.postman` opens the Postman collection, and `/docs.openapi` the OpenAPI spec.
-        'docs_url' => '/docs',
+        // Alterado para /docs-api para não conflitar com a documentação Vue.js em /docs
+        'docs_url' => '/docs-api',
 
         // Directory within `public` in which to store CSS and JS assets.
         // By default, assets are stored in `public/vendor/scribe`.

@@ -13,7 +13,7 @@ Focada em arquitetura limpa, Strategy Pattern e processamento assíncrono.
 - **PIX e Saques** com suporte a múltiplas subadquirentes
 - **Webhooks simulados** com Laravel Jobs
 - **Strategy Pattern** para fácil extensão
-- **Documentação interativa** com Scribe (`/docs`)
+- **Três tipos de documentação** disponíveis
 - **Testes automatizados** (Feature + Unit)
 
 ---
@@ -22,11 +22,11 @@ Focada em arquitetura limpa, Strategy Pattern e processamento assíncrono.
 
 - **PHP 8.3** · **Laravel 10** · **MySQL 8**
 - Sanctum · Eloquent · Queues/Jobs
-- Guzzle HTTP · Scribe
+- Guzzle HTTP · Scribe · Vue.js · Vite
 
 ---
 
-## ⚙️ Instalação
+## ⚙️ Instalação e Configuração
 
 ### 1. Clone e instale dependências
 
@@ -34,7 +34,11 @@ Focada em arquitetura limpa, Strategy Pattern e processamento assíncrono.
 git clone <seu-repositorio>
 cd super-backend
 
+# Instalar dependências PHP
 composer install
+
+# Instalar dependências Node.js (para frontend Vue.js)
+npm install
 ```
 
 ### 2. Configure o ambiente
@@ -65,15 +69,73 @@ Isso criará:
 - Usuário admin: `admin@admin.com` / `admin1234`
 - Alguns usuários de teste
 
-### 4. Inicie o servidor
+### 4. Inicie os servidores
 
+**Terminal 1 - Servidor Laravel:**
 ```bash
 php artisan serve
 ```
 
-Acesse:
-- **API:** `http://localhost:8000/api/v1`
-- **Documentação:** `http://localhost:8000/docs`
+**Terminal 2 - Servidor Vite (para frontend Vue.js):**
+```bash
+npm run dev
+```
+
+### 5. Acesse as páginas
+
+Após iniciar os servidores, acesse:
+
+- **API Base:** `http://localhost:8000/api/v1`
+- **Documentação Scribe:** `http://localhost:8000/docs-api`
+- **Teste Interativo (Vue.js):** `http://localhost:8000/test-api`
+- **Documentação Formal (Vue.js):** `http://localhost:8000/documentation`
+
+---
+
+## 📚 Documentação Disponível
+
+O projeto possui **três tipos de documentação** para diferentes necessidades:
+
+### 1. 📖 Documentação Scribe (`/docs-api`)
+
+Documentação gerada automaticamente pelo **Scribe**, incluindo:
+- ✅ Todos os endpoints organizados por grupos
+- ✅ Exemplos de requisições em múltiplas linguagens (bash, JavaScript, PHP, etc.)
+- ✅ Interface interativa com botão "Try it out"
+- ✅ Autenticação integrada
+- ✅ Especificação OpenAPI e coleção Postman
+
+**Acesse:** `http://localhost:8000/docs-api`
+
+**Ideal para:** Desenvolvedores que querem uma documentação completa e interativa com exemplos de código prontos.
+
+### 2. 🧪 Página de Teste Interativa (`/test-api`)
+
+Interface desenvolvida em **Vue.js** para testar todos os endpoints da API:
+- ✅ Interface moderna e intuitiva
+- ✅ Formulários pré-preenchidos com dados de teste
+- ✅ Visualização de respostas JSON formatadas
+- ✅ Autenticação automática com token salvo
+- ✅ Listagem interativa de PIX e Saques
+- ✅ Teste de todos os endpoints disponíveis
+
+**Acesse:** `http://localhost:8000/test-api`
+
+**Ideal para:** Testar rapidamente a API sem precisar de ferramentas externas como Postman ou Insomnia.
+
+### 3. 📘 Documentação Formal (`/documentation`)
+
+Documentação técnica completa desenvolvida em **Vue.js**:
+- ✅ Estrutura de documentação profissional
+- ✅ Índice navegável
+- ✅ Exemplos de requisições curl
+- ✅ Tabelas detalhadas de parâmetros
+- ✅ Códigos de erro HTTP
+- ✅ Estrutura de respostas
+
+**Acesse:** `http://localhost:8000/documentation`
+
+**Ideal para:** Consulta rápida de parâmetros, códigos de erro e estrutura de respostas.
 
 ---
 
@@ -114,18 +176,36 @@ Authorization: Bearer {seu_token}
 
 ## 🌐 Endpoints Principais
 
+### Autenticação
+
 | Método | Rota | Descrição | Auth |
 |--------|------|-----------|------|
-| POST | `/api/v1/auth/register` | Registrar usuário | Não |
-| POST | `/api/v1/auth/login` | Login | Não |
+| POST | `/api/v1/auth/register` | Registrar novo usuário | Não |
+| POST | `/api/v1/auth/login` | Login e obter token | Não |
 | POST | `/api/v1/auth/logout` | Logout | Sim |
-| GET | `/api/v1/user` | Dados do usuário | Sim |
+| GET | `/api/v1/user` | Dados do usuário autenticado | Sim |
+
+### PIX
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
 | POST | `/api/v1/pix` | Gerar PIX | Sim |
-| GET | `/api/v1/pix` | Listar PIX | Sim |
-| GET | `/api/v1/pix/{id}` | Detalhar PIX | Sim |
+| GET | `/api/v1/pix` | Listar todos os PIX | Sim |
+| GET | `/api/v1/pix/{id}` | Detalhes de um PIX específico | Sim |
+
+### Saques
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
 | POST | `/api/v1/withdraws` | Solicitar saque | Sim |
-| GET | `/api/v1/withdraws` | Listar saques | Sim |
-| GET | `/api/v1/withdraws/{id}` | Detalhar saque | Sim |
+| GET | `/api/v1/withdraws` | Listar todos os saques | Sim |
+| GET | `/api/v1/withdraws/{id}` | Detalhes de um saque específico | Sim |
+
+### Pagamentos
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
+| POST | `/api/v1/payment/process` | Processar pagamento | Sim |
 
 ---
 
@@ -141,9 +221,9 @@ Content-Type: application/json
 {
   "amount": 100.50,
   "payer_name": "João Silva",
-  "payer_document": "12345678900",
+  "payer_document": "11144477735",
   "description": "Pagamento teste",
-  "subadquirente": "subadq_a"  // ou "subadq_b"
+  "subadquirente": "subadq_a"  // opcional: "subadq_a" ou "subadq_b"
 }
 ```
 
@@ -177,7 +257,35 @@ Content-Type: application/json
     "account": "1234567-8",
     "account_type": "checking"
   },
-  "subadquirente": "subadq_a"
+  "subadquirente": "subadq_a"  // opcional
+}
+```
+
+**Resposta:**
+```json
+{
+  "message": "Saque solicitado com sucesso.",
+  "data": {
+    "id": 1,
+    "withdraw_id": "SP_WD_...",
+    "status": "pending",
+    "amount": "50.00"
+  }
+}
+```
+
+### Processar Pagamento
+
+```bash
+POST /api/v1/payment/process
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "amount": 100.50,
+  "gateway_name": "subadquirente_a",
+  "payment_token": "tok_123456789",
+  "payee_id": 2
 }
 ```
 
@@ -327,16 +435,6 @@ public function register(): void
 
 ---
 
-## 📚 Documentação Interativa
-
-Acesse `http://localhost:8000/docs` para:
-- Ver todos os endpoints disponíveis
-- Testar diretamente pelo navegador
-- Copiar exemplos de código em várias linguagens
-- Entender parâmetros e respostas
-
----
-
 ## 🚀 Queue Worker (Produção)
 
 Para processar jobs assíncronos em produção:
@@ -388,6 +486,9 @@ php artisan test
 
 # Processar jobs manualmente
 php artisan queue:work --once
+
+# Compilar assets do frontend (produção)
+npm run build
 ```
 
 ---
@@ -498,4 +599,4 @@ Desenvolvido com ❤️ demonstrando:
 - Arquitetura limpa e extensível
 - Boas práticas do Laravel
 - Testes automatizados
-- Documentação completa
+- Documentação completa e múltiplas interfaces

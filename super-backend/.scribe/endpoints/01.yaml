@@ -1,0 +1,134 @@
+name: Pagamentos
+description: |-
+
+  Endpoints para processamento de pagamentos usando múltiplos gateways (Strategy Pattern).
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/payment/process
+    metadata:
+      custom: []
+      groupName: Pagamentos
+      groupDescription: |-
+
+        Endpoints para processamento de pagamentos usando múltiplos gateways (Strategy Pattern).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Processar Pagamento'
+      description: |-
+        Processa um pagamento usando um dos gateways disponíveis (subadquirente_a ou subadquirente_b).
+        O pagamento é processado de forma atômica, garantindo integridade dos dados.
+
+        **Gateways Disponíveis:**
+        - `subadquirente_a`: Simula sucesso no pagamento
+        - `subadquirente_b`: Simula falha no pagamento
+
+        **Fluxo:**
+        1. Verifica saldo do pagador
+        2. Cria transação com status PENDING
+        3. Processa pagamento no gateway selecionado
+        4. Atualiza saldos das carteiras (se sucesso)
+        5. Atualiza status da transação
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {seu_token_aqui}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      amount:
+        custom: []
+        name: amount
+        description: 'Valor do pagamento (mínimo 0.01).'
+        required: true
+        example: 100.5
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      gateway_name:
+        custom: []
+        name: gateway_name
+        description: 'Nome do gateway. Deve ser: subadquirente_a ou subadquirente_b.'
+        required: true
+        example: subadquirente_a
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      payment_token:
+        custom: []
+        name: payment_token
+        description: 'Token de pagamento (simulado).'
+        required: true
+        example: tok_123456789
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      payee_id:
+        custom: []
+        name: payee_id
+        description: 'ID do usuário recebedor.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      amount: 100.5
+      gateway_name: subadquirente_a
+      payment_token: tok_123456789
+      payee_id: 2
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "message": "Pagamento processado com sucesso.",
+            "transaction_id": 1,
+            "status": "completed"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "message": "Falha ao processar o pagamento.",
+            "error": "Falha no gateway de pagamento: declined"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "message": "Falha ao processar o pagamento.",
+            "error": "Saldo insuficiente."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
